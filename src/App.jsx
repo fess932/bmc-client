@@ -1,6 +1,5 @@
 import { AppBar, Container, Toolbar, Typography } from '@mui/material'
 import {
-  Loadable,
   RecoilRoot,
   selector,
   selectorFamily,
@@ -23,12 +22,6 @@ function App() {
 
 export default App
 
-type story = {
-  id: number
-  type: string
-  title: string
-}
-
 const lastStoriesIDQuery = selector({
   key: 'lastStoriesIDQuery',
   get: async () => {
@@ -36,7 +29,7 @@ const lastStoriesIDQuery = selector({
       'https://hacker-news.firebaseio.com/v0/newstories.json'
     )
 
-    let ids: Array<number> = await resp.json()
+    let ids = await resp.json()
     if (ids.length === 0) {
       throw new Error('No stories found')
     }
@@ -48,11 +41,11 @@ const lastStoriesIDQuery = selector({
 
 const storyQuery = selectorFamily({
   key: 'storyQuery',
-  get: (id: number) => async () => {
+  get: (id) => async () => {
     const storyPath = `https://hacker-news.firebaseio.com/v0/item/${id}.json`
     try {
       const resp = await fetch(storyPath)
-      const story: story = await resp.json()
+      const story = await resp.json()
       return story
     } catch (e) {
       console.log('error', e)
@@ -84,7 +77,7 @@ function HackerNews() {
   )
 }
 
-function LoadableStory(story: Loadable<story>, key: number) {
+function LoadableStory(story, key) {
   if (story.state === 'loading') {
     return <div key={key}>Loading...</div>
   }
